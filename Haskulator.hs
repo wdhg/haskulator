@@ -27,7 +27,9 @@ iterAfter pos iter = snd $ splitAt pos iter
 
 splitCalc :: String -> [String]
 splitCalc calc = do
-  let item = if isDigit $ calc !! 0 then takeWhile isDigit calc else [calc !! 0]
+  let item = if isDigit $ calc !! 0 
+             then takeWhile isDigit calc 
+             else [calc !! 0]
   if item == calc
     then [item]
     else item : splitCalc (iterAfter (length item) calc)
