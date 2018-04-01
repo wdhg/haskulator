@@ -1,12 +1,11 @@
+-- in order of precedence
 data Token 
   = TokNum Float
-  | TokAdd
   | TokSub
-  | TokMul
+  | TokAdd
   | TokDiv
-  | TokLParen
-  | TokRParen
-  deriving (Show)
+  | TokMul
+  deriving (Show, Eq, Ord)
 
 isDigit :: Char -> Bool
 isDigit char = char `elem` '.':['0'..'9']
@@ -18,8 +17,6 @@ classify item
   | item == "-"      = TokSub
   | item == "*"      = TokMul
   | item == "/"      = TokDiv
-  | item == "("      = TokLParen
-  | item == ")"      = TokRParen
 
 -- gets the contents of the iterable after the position
 takeAfter :: Int -> [a] -> [a]
@@ -32,9 +29,27 @@ splitCalc calc = do
              else [head calc] -- get the opperator
   if item == calc
     then [item] -- we've hit the end of the calculation
-    else item : splitCalc (takeAfter (length item) calc) -- more to go
+    else item:splitCalc (takeAfter (length item) calc) -- more to go
 
 tokenize :: String -> [Token]
 tokenize calc = map classify $ splitCalc $ filter (/=' ') calc
 
-main = print $ tokenize "123* 4.31"
+-- shunting-yard algorithm
+sortTokens :: [Token] -> [Token] -> [Token]
+sortTokens (token:rest) opperators = case token of
+  TokNum {} -> token:sortTokens rest opperators -- is number
+  opperator -> if opperators == null || opperator > head opperators
+    then sortTokens rest $ token:opperators
+    else head opperators:sortTokens rest (tail opperators)
+
+--parse :: [Token] -> Float
+--parse tokens = do
+  
+
+-- calculate :: String -> Float
+-- calculate calc
+--   parse $ sortTokens $ tokenize calc+
+
+main = do
+  let tokens = tokenize "123 * 4.31"
+  print $ sortTokens tokens []
