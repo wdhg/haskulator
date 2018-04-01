@@ -28,11 +28,11 @@ iterAfter pos iter = snd $ splitAt pos iter
 splitCalc :: String -> [String]
 splitCalc calc = do
   let item = if isDigit $ head calc
-             then takeWhile isDigit calc 
-             else [head calc]
+             then takeWhile isDigit calc -- Get the entire number
+             else [head calc] -- Get the opperator
   if item == calc
-    then [item]
-    else item : splitCalc (iterAfter (length item) calc)
+    then [item] -- We've hit the end of the calculation
+    else item : splitCalc (iterAfter (length item) calc) -- More to go
 
 tokenize :: String -> [Token]
 tokenize calc = map classify $ splitCalc $ filter (/=' ') calc
