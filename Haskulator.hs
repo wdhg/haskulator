@@ -22,8 +22,8 @@ classify item
   | item == ")"      = TokRParen
 
 -- gets the contents of the iterable after the position
-iterAfter :: Int -> [a] -> [a]
-iterAfter pos iter = snd $ splitAt pos iter
+takeAfter :: Int -> [a] -> [a]
+takeAfter pos iter = snd $ splitAt pos iter
 
 splitCalc :: String -> [String]
 splitCalc calc = do
@@ -32,7 +32,7 @@ splitCalc calc = do
              else [head calc] -- get the opperator
   if item == calc
     then [item] -- we've hit the end of the calculation
-    else item : splitCalc (iterAfter (length item) calc) -- more to go
+    else item : splitCalc (takeAfter (length item) calc) -- more to go
 
 tokenize :: String -> [Token]
 tokenize calc = map classify $ splitCalc $ filter (/=' ') calc
