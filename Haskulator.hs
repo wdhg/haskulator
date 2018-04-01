@@ -21,18 +21,18 @@ classify item
   | item == "("      = TokLParen
   | item == ")"      = TokRParen
 
--- Gets the contents of the iterable after the position
+-- gets the contents of the iterable after the position
 iterAfter :: Int -> [a] -> [a]
 iterAfter pos iter = snd $ splitAt pos iter
 
 splitCalc :: String -> [String]
 splitCalc calc = do
   let item = if isDigit $ head calc
-             then takeWhile isDigit calc -- Get the entire number
-             else [head calc] -- Get the opperator
+             then takeWhile isDigit calc -- get the entire number
+             else [head calc] -- get the opperator
   if item == calc
-    then [item] -- We've hit the end of the calculation
-    else item : splitCalc (iterAfter (length item) calc) -- More to go
+    then [item] -- we've hit the end of the calculation
+    else item : splitCalc (iterAfter (length item) calc) -- more to go
 
 tokenize :: String -> [Token]
 tokenize calc = map classify $ splitCalc $ filter (/=' ') calc
